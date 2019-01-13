@@ -3,11 +3,6 @@ bits 16
 org 0x7c00
 
 start:
-    xor ax, ax
-    mov ds, ax
-    mov gs, ax
-    mov fs, ax
-    mov gs, ax
     
     call clear_screen
     mov cx, msg1_len
