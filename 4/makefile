@@ -1,6 +1,7 @@
 target := kernel
 
-obj := init/loader.o init/kmain.o
+src := $(wildcard draw/*.c)
+obj := init/loader.o init/kmain.o $(src:.c=.o)
 bin := boot/boot.bin init/kernel.bin
 
 .PHONY: clean
@@ -13,8 +14,8 @@ run: $(target)
 	
 clean:
 	@rm -f boot/*.bin
-	@rm -f init/*.o
 	@rm -f init/*.bin
+	@rm -f $(obj)
 	@rm -f $(target)
 	
 %.bin: %.asm

@@ -39,12 +39,12 @@ load_loader:
     ;read loader at 0x1000
     
     ;ah = 0x02, interrupt attribute, read disk
-    ;al = 0x02, the number of reading sector
+    ;al = 0x11, the number of reading sector, in there we need to read more
     ;ch = 0x00, cylinder number
     ;cl = 0x02, sector number
     ;dh = 0x00, head number
     ;dl, driver number
-    mov ax, 0x0202
+    mov ax, 0x0211
     mov cx, 0x0002
     mov dh, 0x00
     mov dl, [boot_drv]

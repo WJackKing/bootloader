@@ -1,3 +1,7 @@
-void show_1(unsigned int r, unsigned int c);
-void show_a(unsigned int r, unsigned int c);
-void show_b(unsigned int r, unsigned int c);
+#ifndef KMAIN_H
+#define KMAIN_H
+
+#include <init/ctypes.h>
+#include <draw/draw_text.h>
+
+#endif
