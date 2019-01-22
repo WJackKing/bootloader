@@ -15,6 +15,7 @@ clean:
 	rm boot/*.bin
 	rm init/*.o
 	rm init/*.bin
+	rm kernel
 	
 %.bin: %.asm
 	nasm -fbin -o $@ $<
