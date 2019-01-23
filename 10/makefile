@@ -1,6 +1,6 @@
 target := kernel
 
-src := $(wildcard src/init/*.c src/cpu/*.c src/io/*.c src/driver/*.c src/draw/*.c)
+src := $(wildcard src/cpu/*.c src/util/*.c src/driver/*.c src/init/*.c)
 obj := src/init/loader.o $(src:.c=.o)
 bin := src/boot/boot.bin src/init/kernel.bin
 
@@ -13,11 +13,11 @@ run: $(target)
 	@qemu-system-x86_64 -drive format=raw,file=$<
 	
 clean:
-	@rm -f $(bin)
 	@rm -f $(obj)
+	@rm -f $(bin)
 	@rm -f $(target)
 	
-%.bin: %.asm
+src/boot/boot.bin: src/boot/boot.asm
 	@nasm -fbin -o $@ $<
 	
 src/init/kernel.bin: linker.ld $(obj)

@@ -6,4 +6,6 @@
 #include <driver/driver.h>
 #include <driver/screen.h>
 
+extern void kmain();
+
 #endif

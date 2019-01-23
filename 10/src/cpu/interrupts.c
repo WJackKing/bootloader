@@ -33,11 +33,13 @@ void remap_pic() {
     outb(0x21, 0x00);
     outb(0xa1, 0x00);
     
+    //unmask all port
     outb(0xa1, 0x00);
     outb(0x21, 0x00);
 }
 
 void registe_ints() {
+    //isr
     registe_int((u64)int0, 0);
     registe_int((u64)int1, 1);
     registe_int((u64)int2, 2);
@@ -71,6 +73,7 @@ void registe_ints() {
     registe_int((u64)int30, 30);
     registe_int((u64)int31, 31);
     
+    //irq
     registe_int((u64)int32, 32);
     registe_int((u64)int33, 33);
     registe_int((u64)int34, 34);
@@ -100,7 +103,6 @@ void registe_int(u64 address, u32 num) {
 }
 
 void int_hub(u32 num) {
-
     outb(0x20, 0x20);
     if(num >= 40) {
         outb(0xa0, 0x20);

@@ -1,15 +1,54 @@
 ;readed by boot
 ;i think it will more perfect to go into long mode
 
+;used by linker, called by boot.asm
+global loader
+;c function
 extern kmain
 
-[bits 32]
-
-;used by linker, called by boot.asm, enter_protected
-global loader
-
 section .text
+
+[bits 16]
 loader:
+    ;set video mode and initiate protected mode
+    call set_screen
+    call init_protected
+    jmp CODE_SEG:enter_protected
+
+set_screen:
+    ; vbe mode
+    mov ax, 0x4f02
+    mov bx, 0x4118
+    int 0x10
+    cmp ax, 0x4f00
+    jne .success
+    mov ax, 0x0011
+    int 0x10
+    ret
+.success:
+    ret
+
+init_protected:
+    cli
+    lgdt [gdt_des]
+    mov eax, cr0
+    or eax, 0x1
+    mov cr0, eax
+    ret
+
+[bits 32]
+enter_protected:
+    ;init segment register
+    mov ax, DATA_SEG
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    
+    mov ebp, 0x90000
+    mov esp, ebp
+
     ;make sure you cpu support cpu
     call check_cpuid
     call check_long
@@ -104,7 +143,6 @@ init_long:
     ret
 
 [bits 64]
-
 enter_long:
     mov ax, DATA64_SEG
     mov ds, ax
@@ -122,6 +160,21 @@ enter_long:
     jmp $
 
 section .rodata
+gdt_start:
+gdt_null:
+    dq 0x00
+gdt_code:
+    dq 0x00cf9a000000ffff
+gdt_data:
+    dq 0x00cf92000000ffff
+gdt_end:
+gdt_des:
+    dw gdt_end - gdt_start - 1
+    dd gdt_start
+
+CODE_SEG equ gdt_code - gdt_start
+DATA_SEG equ gdt_data - gdt_start
+
 gdt64_start:
 gdt64_null:
     dq 0x00
@@ -147,10 +200,9 @@ pd:
     resb 4096
 pt:
     resb 4096
-
 stack_bottom:
     resb 65536
 stack_top:
 
 section .data
-frame_buffer: dd 0
+db 0
