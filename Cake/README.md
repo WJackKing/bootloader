@@ -1,0 +1,1 @@
+# Cake is a pure 64-bits operate system.
