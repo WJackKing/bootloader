@@ -1,7 +1,7 @@
 #include <driver/timer.h>
 #include <driver/graphics.h>
 
-u32 timer_counter = 0;
+u64 timer_counter = 0;
 
 void init_timer() {
     asm("cli");
@@ -11,5 +11,4 @@ void init_timer() {
 
 void timer_callback() {
     timer_counter++;
-    kprint("t");
 }

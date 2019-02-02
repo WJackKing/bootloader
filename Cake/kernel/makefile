@@ -1,7 +1,7 @@
 kernel := kernel.bin
 
 src_asm := $(wildcard src/initial/*.asm)
-src_c := $(wildcard src/initial/*.c src/driver/*.c src/utils/*.c src/cpu/*.c)
+src_c := $(wildcard src/initial/*.c src/driver/*.c src/utils/*.c src/cpu/*.c src/mem/*.c)
 obj := $(src_asm:.asm=.o) $(src_c:.c=.o)
 linker := src/linker.ld
 

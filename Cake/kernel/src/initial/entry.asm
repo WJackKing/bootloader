@@ -81,6 +81,20 @@ init_page:
     inc ecx
     cmp eax, 0x400000
     jb .map_pt_2
+    mov ecx, 0
+.map_pt_3:
+    mov [pt_3 + ecx * 8], eax
+    add eax, 0x1000
+    inc ecx
+    cmp eax, 0x600000
+    jb .map_pt_3
+    mov ecx, 0
+.map_pt_4:
+    mov [pt_4 + ecx * 8], eax
+    add eax, 0x1000
+    inc ecx
+    cmp eax, 0x800000
+    jb .map_pt_4
     ret
 
 init_long:
@@ -150,6 +164,10 @@ pd:
 pt_1:
     resb 4096
 pt_2:
+    resb 4096
+pt_3:
+    resb 4096
+pt_4:
     resb 4096
 stack_bottom:
     resb 4096 * 4

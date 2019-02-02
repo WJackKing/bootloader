@@ -1,8 +1,21 @@
 #include <cpu/interrupts.h>
+#include <utils/print.h>
 
 idt_entry_t IDT[IDT_SIZE];
 idt_ptr_t idt_ptr;
 int_callback int_routines[16];
+u8 *int_msg[32] = {
+	"Division by zero", "Debug", "Non-maskable interrupt",
+	"Breakpoint", "Detected overflow", "Out-of-bounds",
+	"Invalid opcode", "No coprocessor", "Double fault",
+	"Coprocessor segment overrun", "Bad TSS",
+	"Segment no present", "Stack fault",
+	"General protection fault", "Page fault", "Unknown interrupt",
+	"Coprocessor fault", "Alignment check", "Machine check",
+	"Reserved", "Reserved", "Reserved", "Reserved", "Reserved", 
+	"Reserved", "Reserved", "Reserved", "Reserved", "Reserved",
+	"Reserved", "Reserved", "Reserved"
+}; 
 
 void install_int(u32 num, int_callback callback) {
     int_routines[num] = callback;
@@ -103,6 +116,9 @@ void registe_int(u64 address, u32 num) {
 }
 
 void int_hub(u32 num) {
+    if(num <= 31) {
+        kprintf("%s\n", int_msg[num]);
+    }
     outb(0x20, 0x20);
     if(num >= 40) {
         outb(0xa0, 0x20);

@@ -4,18 +4,17 @@ global loader
 
 loader:
     call load_kernel
-    jmp kernel_off
+    jmp entry_off
     jmp $
 
 load_kernel:
     ; disk offset
-    mov eax, 0x4
     ; sectors count
-    mov ecx, 0x800
     ; memory offset
+    mov eax, 0xc
+    mov ecx, 0x21
     mov edi, kernel_off
     call read_segment
-    call check_elf
     ret
 
 read_segment:
@@ -92,4 +91,5 @@ check_elf:
     mov byte [eax], 'n'
     jmp $
 
+entry_off equ 0xff000
 kernel_off equ 0x100000

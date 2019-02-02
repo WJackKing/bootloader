@@ -1,4 +1,5 @@
 #include <driver/keyboard.h>
+#include <utils/print.h>
 
 void init_keyboard() {
     asm("cli");
@@ -18,10 +19,10 @@ void keyboard_callback() {
     case 0x08:
     case 0x09:
     case 0x0a:
-        kprint("num");
+        kprintc(code + 0x2f);
         break;
     case 0x0b:
-        kprint("zero");
+        back();
         break;
     }
 }
