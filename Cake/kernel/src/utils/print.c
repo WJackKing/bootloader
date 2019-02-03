@@ -42,11 +42,11 @@ void kprintf(u8 *str, ...) {
 					p_arg++;
 					break;
 				case 'u':
-					write_uint(*((s64*)p_arg), 10);
+					write_uint(*((u64*)p_arg), 10);
 					p_arg++;
 					break;
 				case 'p':
-					write_uint(*((s64*)p_arg), 16);
+					write_uint(*((u64*)p_arg), 16);
 					p_arg++;
 					break;
 				case 'c':

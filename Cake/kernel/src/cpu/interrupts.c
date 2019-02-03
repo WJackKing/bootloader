@@ -4,7 +4,7 @@
 idt_entry_t IDT[IDT_SIZE];
 idt_ptr_t idt_ptr;
 int_callback int_routines[16];
-u8 *int_msg[32] = {
+u8 int_msg[32][27] = {
 	"Division by zero", "Debug", "Non-maskable interrupt",
 	"Breakpoint", "Detected overflow", "Out-of-bounds",
 	"Invalid opcode", "No coprocessor", "Double fault",
@@ -15,7 +15,7 @@ u8 *int_msg[32] = {
 	"Reserved", "Reserved", "Reserved", "Reserved", "Reserved", 
 	"Reserved", "Reserved", "Reserved", "Reserved", "Reserved",
 	"Reserved", "Reserved", "Reserved"
-}; 
+};
 
 void install_int(u32 num, int_callback callback) {
     int_routines[num] = callback;

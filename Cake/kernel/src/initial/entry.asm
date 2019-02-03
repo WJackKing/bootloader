@@ -1,11 +1,12 @@
 global entry
 global pml4
+global pdpt
+global pd
 extern initial
 
 section .text
 
 [bits 32]
-
 entry:
     call check_cpuid
     call check_long

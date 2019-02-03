@@ -1,6 +1,7 @@
 ENTRY(entry)
 SECTIONS {
     . = 0x100000;
+    PROVIDE(kernel_start = .);
     .text : {
         *(.text)
     }
@@ -13,4 +14,5 @@ SECTIONS {
     .bss : {
         *(.bss)
     }
+    PROVIDE(kernel_end = .);
 }

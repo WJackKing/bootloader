@@ -1,7 +1,10 @@
 #include <driver/graphics.h>
 
-
 Buffer buffer = {0, 0, {CHAR}};
+const u8 c_table[16] = {'0', '1', '2', '3', '4', '5', '6', '7',
+					    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+u8 n_buffer[64] = {0};
+u8 pos = 0;
 
 void write_char(u8 c) {
 	write_char_color(c, COLOR);
@@ -53,43 +56,21 @@ void write_uint_color(u64 value, u8 base, u8 color) {
 		return;
 	}
 
-	u32 len = 1;
-	u64 low = value % base;
-	u64 high = 0;
-	value /= base;
-	u8 c[16] = {'0', '1', '2', '3',
-		'4', '5', '6', '7',
-		'8', '9', 'a', 'b',
-		'c', 'd', 'e', 'f'};
 	while(value) {
-		if(len <= 8){
-			low = low * base + value % base;
-			value /= base;
-		}else{
-			high = high * base + value % base;
-			value /= base;
-		}
-		len++;
+		n_buffer[pos] = (u8) value % base;
+		pos++;
+		value /= base;
 	}
 
-	while(len) {
-		len--;
-		if(len > 8) {
-			if(high) {
-				write_char_color(c[high % base], color);
-				high /= base;
-			}else{
-				write_char_color(48, color);
-			}
-		}else{
-			if(low) {
-				write_char_color(c[low % base], color);
-				low /= base;
-			}else{
-				write_char_color(48, color);
-			}
-		}
+	if(pos == 0) {
+		write_char_color('0', color);
+		return;
 	}
+	for(s32 i = pos - 1; i >= 0; i--) {
+		write_char_color(c_table[n_buffer[i]], color);
+	}
+
+	pos = 0;
 }
 
 void new_line() {
@@ -148,10 +129,6 @@ void update_cursor(u32 x, u32 y) {
 	outb(0x3d5, p & 0xff);
 }
 
-u32 get_pos() {
-	return buffer.x * BUF_WIDTH + buffer.y;
-}
-
 void get_buf_str(u32 start, u32 end, u8 *out) {
 	for(u32 i = start; i < end; i++) {
 		out[i - start] = buffer.buf[i/BUF_WIDTH][i%BUF_WIDTH] >> 8;
@@ -160,7 +137,7 @@ void get_buf_str(u32 start, u32 end, u8 *out) {
 
 void enable_cursor() {
 	outb(0x3d4, 0x0a);
-	outb(0x3d5, (inb(0x3d5) & 0xc0) | 15);
+	outb(0x3d5, (inb(0x3d5) & 0xc0) | 13);
 	outb(0x3d4, 0x0b);
 	outb(0x3d5, (inb(0x3d5) & 0xe0) | 15);
 }

@@ -17,6 +17,7 @@ boot:
 
     call init_screen
     call seta20_1
+    call e820
     call load_loader
     call init_protected
     jmp CODE_SEG:enter_protected
@@ -57,6 +58,52 @@ seta20_3:
 seta20_4:
     ret
 
+e820:
+    mov di, 0x9000
+    xor ebx, ebx
+    xor bp, bp
+    mov edx, 0x0534d4150
+    mov eax, 0xe820
+    mov dword [es:di + 20], 0x1
+    mov ecx, 24
+    int 0x15
+    jc .failed
+    mov edx, 0x0534d4150
+    cmp eax, edx
+    jne .failed
+    test ebx, ebx
+    je .failed
+    jmp .jmpin
+.e820lp:
+    mov eax, 0xe820
+    mov dword [es:di + 20], 0x1
+    mov ecx, 24
+    int 0x15
+    jc .e820f
+    mov edx, 0x0534d4150
+.jmpin:
+    jcxz .skipent
+    cmp cl, 20
+    jbe .notext
+    test byte [es:di + 20], 0x1
+    je .skipent
+.notext:
+    mov ecx, [es:di + 8]
+    or ecx, [es:di + 12]
+    jz .skipent
+    inc bp
+    add di, 24
+.skipent:
+    test ebx, ebx
+    jne .e820lp
+.e820f:
+    ; mov [mmap_ent], bp
+    clc
+    ret
+.failed:
+    stc
+    ret
+
 load_loader:
     mov ax, 0x0203
     mov cx, 0x0002
@@ -85,7 +132,7 @@ enter_protected:
     mov gs, eax
     mov ss, eax
 
-    mov ebp, 0x90000
+    mov ebp, 0x9000
     mov esp, ebp
 
     jmp loader_off
@@ -94,6 +141,7 @@ enter_protected:
 
 loader_off equ 0x1000
 boot_drv: db 0
+; mmap_ent: db 0
 
 gdt_start:
 gdt_null:

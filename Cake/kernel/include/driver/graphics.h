@@ -48,7 +48,6 @@ void new_line();
 void buf_back();
 void flush();
 void update_cursor(u32 x, u32 y);
-u32 get_pos();
 void get_buf_str(u32, u32, u8 *);
 void enable_cursor();
 void init_graphics();
